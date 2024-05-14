@@ -11,11 +11,11 @@ using PixelNetwork.Properties;
 
 namespace PixelNetwork.Controllers
 {
-	/// <summary>
-	/// OAuthController should be deployed as a part of your ASP.NET website.
-	/// It may contain insignificant dependencies to other parts of the original Authorization Middleware, just comment or replace them.
-	/// Alternatively, you can use it as a reference and implement the same logic with other programming languages and platforms.
-	/// </summary>
+    /// <summary>
+    /// OAuthController should be deployed as a part of your ASP.NET website.
+    /// It may contain insignificant dependencies to other parts of the original Authorization Middleware, just comment or replace them.
+    /// Alternatively, you can use it as a reference and implement the same logic with other programming languages and platforms.
+    /// </summary>
     [Route("api/[controller]")]
     public class OAuthController : BaseController
     {
