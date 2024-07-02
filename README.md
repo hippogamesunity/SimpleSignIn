@@ -16,7 +16,7 @@
 | Email | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  | ⬤ |
 | Username |  |  |  | ⬤ | ⬤ |  | ◍ |  |
 | Access token | ⬤ | ⬤ | ⬤ | ⬤ |  | ⬤ | ⬤ | ⬤ |
-| Refresh token | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  | ⬤ |
+| Refresh token | ⬤ | ⬤ | ⬤ |  |  | ⬤ | ⬤ | ⬤ |
 | ID Token (JWT) | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  |  |
 
 ◍ - extra scopes need to be added to receive `username` (refer to platform API docs)
