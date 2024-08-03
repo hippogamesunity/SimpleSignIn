@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -80,12 +82,31 @@ namespace PixelNetwork.Controllers
         }
 
         [HttpPost("download")]
-        public IActionResult Download(string url)
+        public async Task<string> Download(string url, string form)
         {
-            if (!url.StartsWith("https://oauth.vk.com/access_token") && !url.StartsWith("https://api.vk.com/method/users.get")) 
-                throw new Exception("Unsupported url.");
+            var allowed = new List<string>
+            {
+                "https://oauth.vk.com/access_token", "https://api.vk.com/method/users.get",
+                "https://open.tiktokapis.com/v2/oauth/token/", "https://open.tiktokapis.com/v2/oauth/revoke/",
+                "https://api.twitter.com/2/oauth2/token", "https://api.twitter.com/2/oauth2/revoke", "https://api.twitter.com/2/users/me"
+            };
 
-            return Content(new HttpClient().GetStringAsync(url).Result);
+            if (!allowed.Any(url.StartsWith)) throw new Exception("Unsupported url.");
+
+            using var client = new HttpClient();
+
+            if (Request.Headers.TryGetValue("Authorization", out var authorization) && authorization.Count == 1)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(authorization[0].Split(' ')[0], authorization[0].Split(' ')[1]);
+            }
+
+            if (form == null) return await client.GetStringAsync(url);
+
+            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(form);
+            var content = new FormUrlEncodedContent(dict);
+            var response = await client.PostAsync(url, content).Result.Content.ReadAsStringAsync();
+            
+            return response;
         }
 
         [HttpPost("apple_redirect")]
