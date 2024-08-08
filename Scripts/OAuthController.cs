@@ -58,7 +58,7 @@ namespace PixelNetwork.Controllers
 
             var template = Request.Headers.TryGetValue("Referer", out var referer) && (referer.Contains("https://id.vk.com/") || referer.Contains("https://twitter.com/") || referer.Contains("/telegramwidget") || referer.Contains("https://appleid.apple.com/"))
                 ? Resources.OAuthTemplate
-                : Resources.OAuthTemplateAutoClosed;
+                : Resources.OAuthTemplateAutoClosed; // Design your own HTML page to ask users to return to the app.
 
             if (Request.GetDisplayUrl().Contains("platform=telegram"))
             {
@@ -86,9 +86,10 @@ namespace PixelNetwork.Controllers
         {
             var allowed = new List<string>
             {
-                "https://oauth.vk.com/access_token", "https://api.vk.com/method/users.get",
+                "https://appleid.apple.com/auth/token", "https://appleid.apple.com/auth/revoke",
+                "https://api.twitter.com/2/oauth2/token", "https://api.twitter.com/2/oauth2/revoke", "https://api.twitter.com/2/users/me",
                 "https://open.tiktokapis.com/v2/oauth/token/", "https://open.tiktokapis.com/v2/oauth/revoke/",
-                "https://api.twitter.com/2/oauth2/token", "https://api.twitter.com/2/oauth2/revoke", "https://api.twitter.com/2/users/me"
+                "https://oauth.vk.com/access_token", "https://api.vk.com/method/users.get"
             };
 
             if (!allowed.Any(url.StartsWith)) throw new Exception("Unsupported url.");
