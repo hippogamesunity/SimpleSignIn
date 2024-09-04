@@ -17,6 +17,6 @@
 | Username |  |  |  | ⬤ | ⬤ |  | ◍ |  |
 | Access token | ⬤ | ⬤ | ⬤ | ⬤ |  | ⬤ | ⬤ | ⬤ |
 | Refresh token | ⬤ | ⬤ | ⬤ |  |  | ⬤ | ⬤ | ⬤ |
-| ID Token (JWT) | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  |  |
+| ID token (JWT) | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  |  |
 
 ◍ - extra scopes need to be added to receive `username` (refer to platform API docs)
