@@ -10,13 +10,13 @@
 * [Simple TikTok Sign-In](https://github.com/hippogamesunity/SimpleSignIn/wiki/TikTok)
 
 ### User data disclosure
-| Data / Platform | Google | Apple | Facebook | X (Twitter) | Telegram | Microsoft | TikTok | VK |
-| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Name | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ |
-| Email | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  | ⬤ |
-| Username |  |  |  | ⬤ | ⬤ |  | ◍ |  |
-| Access token | ⬤ | ⬤ | ⬤ | ⬤ |  | ⬤ | ⬤ | ⬤ |
-| Refresh token | ⬤ | ⬤ | ⬤ |  |  | ⬤ | ⬤ | ⬤ |
-| ID token (JWT) | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  |  |
+| Data / Platform | Google | Apple | Facebook | X (Twitter) | Telegram | Microsoft | TikTok | Discord | VK |
+| --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Name | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ | ⬤ |
+| Email | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  | ⬤ | ⬤ |
+| Username |  |  |  | ⬤ | ⬤ |  | ◍ | ⬤ |  |
+| Access token | ⬤ | ⬤ | ⬤ | ⬤ |  | ⬤ | ⬤ | ⬤ | ⬤ |
+| Refresh token | ⬤ | ⬤ | ⬤ |  |  | ⬤ | ⬤ | ⬤ | ⬤ |
+| ID Token (JWT) | ⬤ | ⬤ | ⬤ |  |  | ⬤ |  |  |  |
 
 ◍ - extra scopes need to be added to receive `username` (refer to platform API docs)
