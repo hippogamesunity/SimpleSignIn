@@ -27,7 +27,7 @@ namespace PixelNetwork.Controllers
         [HttpPost("init")]
         public void Init(string state, string redirectUri, string clientName)
         {
-            if (state == null) throw new Exception("Invalid parameters.");
+            if (state == null || (state.Length != 32 && state.Length != 36)) throw new Exception("Invalid state.");
             if (Redirects.Count >= 1000) Redirects.Remove(Redirects.Keys.First());
             if (Redirects.ContainsKey(state)) Redirects.Remove(state);
 
