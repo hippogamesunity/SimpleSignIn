@@ -19,7 +19,7 @@ namespace PixelNetwork.Controllers
     /// Alternatively, you can use it as a reference and implement the same logic with other programming languages and platforms.
     /// </summary>
     [Route("api/[controller]")]
-    public class OAuthController : BaseController
+    public class OAuthController : ControllerBase
     {
         private static readonly Dictionary<string, string> Redirects = new Dictionary<string, string>();
         private static readonly Dictionary<string, string> Codes = new Dictionary<string, string>();
@@ -28,37 +28,44 @@ namespace PixelNetwork.Controllers
         public void Init(string state, string redirectUri, string clientName)
         {
             if (state == null || (state.Length != 32 && state.Length != 36)) throw new Exception("Invalid state.");
-            if (Redirects.Count >= 1000) Redirects.Remove(Redirects.Keys.First());
-            if (Redirects.ContainsKey(state)) Redirects.Remove(state);
 
-            Redirects.Add(state, redirectUri);
-            Event("Init", "RedirectUri", redirectUri, "ClientName", clientName);
+            lock (Redirects)
+            {
+                if (Redirects.Count >= 1000) Redirects.Remove(Redirects.Keys.First());
+                if (Redirects.ContainsKey(state)) Redirects.Remove(state);
+
+                Redirects.Add(state, redirectUri);
+            }
         }
 
         [HttpGet("redirect")]
         public IActionResult Redirect(string code, string state)
         {
             if (code == null || state == null) throw new Exception("Invalid parameters.");
-            if (!Redirects.ContainsKey(state)) throw new Exception("Unexpected state.");
-            if (Codes.Count >= 1000) Codes.Remove(Redirects.Keys.First());
-            if (Codes.ContainsKey(state)) Codes.Remove(state);
 
-            var redirectUri = Redirects[state];
-
-            Redirects.Remove(state);
-
-            if (string.IsNullOrEmpty(redirectUri))
+            lock (Redirects) lock (Codes)
             {
-                Codes.Add(state, code);
-            }
-            else
-            {
-                Response.Redirect($"{redirectUri}?code={code}&state={state}", permanent: true);
+                if (!Redirects.ContainsKey(state)) throw new Exception("Unexpected state.");
+                if (Codes.Count >= 1000) Codes.Remove(Redirects.Keys.First());
+                if (Codes.ContainsKey(state)) Codes.Remove(state);
+
+                var redirectUri = Redirects[state];
+
+                Redirects.Remove(state);
+
+                if (string.IsNullOrEmpty(redirectUri))
+                {
+                    Codes.Add(state, code);
+                }
+                else
+                {
+                    Response.Redirect($"{redirectUri}?code={code}&state={state}", permanent: true);
+                }
             }
 
-            var template = Request.Headers.TryGetValue("Referer", out var referer) && (referer.Contains("https://id.vk.com/") || referer.Contains("https://twitter.com/") || referer.Contains("/telegramwidget") || referer.Contains("https://appleid.apple.com/"))
+            var template = Request.Headers.TryGetValue("Referer", out var referer) && (referer.Contains("https://id.vk.com/") || referer.Contains("https://twitter.com/") || referer.Contains("/telegramwidget") || referer.Contains("https://appleid.apple.com/") || referer.Contains("https://discord.com/"))
                 ? Resources.OAuthTemplate
-                : Resources.OAuthTemplateAutoClosed; // Design your own HTML page to ask users to return to the app.
+                : Resources.OAuthTemplateAutoClosed;
 
             if (Request.GetDisplayUrl().Contains("platform=telegram"))
             {
@@ -72,13 +79,17 @@ namespace PixelNetwork.Controllers
         public IActionResult GetCode(string state)
         {
             if (state == null) throw new Exception("Invalid parameters.");
-            if (!Codes.ContainsKey(state)) return StatusCode(704);
 
-            var code = Codes[state];
+            lock (Codes)
+            {
+                if (!Codes.ContainsKey(state)) return StatusCode(704);
 
-            Codes.Remove(state);
+                var code = Codes[state];
 
-            return Content(code);
+                Codes.Remove(state);
+
+                return Content(code);
+            }
         }
 
         [HttpPost("download")]
