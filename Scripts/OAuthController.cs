@@ -20,7 +20,7 @@ namespace PixelNetwork.Controllers
     /// Alternatively, you can use it as a reference and implement the same logic with other programming languages and platforms.
     /// </summary>
     [Route("api/[controller]")]
-    public class OAuthController : BaseController
+    public class OAuthController : ControllerBase
     {
         private static readonly OrderedDictionary Redirects = new OrderedDictionary();
         private static readonly OrderedDictionary Codes = new OrderedDictionary();
