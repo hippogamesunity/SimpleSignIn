@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,10 +20,10 @@ namespace PixelNetwork.Controllers
     /// Alternatively, you can use it as a reference and implement the same logic with other programming languages and platforms.
     /// </summary>
     [Route("api/[controller]")]
-    public class OAuthController : ControllerBase
+    public class OAuthController : BaseController
     {
-        private static readonly Dictionary<string, string> Redirects = new Dictionary<string, string>();
-        private static readonly Dictionary<string, string> Codes = new Dictionary<string, string>();
+        private static readonly OrderedDictionary Redirects = new OrderedDictionary();
+        private static readonly OrderedDictionary Codes = new OrderedDictionary();
 
         [HttpPost("init")]
         public void Init(string state, string redirectUri, string clientName)
@@ -31,8 +32,8 @@ namespace PixelNetwork.Controllers
 
             lock (Redirects)
             {
-                if (Redirects.Count >= 1000) Redirects.Remove(Redirects.Keys.First());
-                if (Redirects.ContainsKey(state)) Redirects.Remove(state);
+                if (Redirects.Count >= 1000) for (var i = 0; i < 100; i++) Redirects.RemoveAt(i);
+                if (Redirects.Contains(state)) Redirects.Remove(state);
 
                 Redirects.Add(state, redirectUri);
             }
@@ -43,13 +44,14 @@ namespace PixelNetwork.Controllers
         {
             if (code == null || state == null) throw new Exception("Invalid parameters.");
 
-            lock (Redirects) lock (Codes)
+            lock (Redirects)
+            lock (Codes)
             {
-                if (!Redirects.ContainsKey(state)) throw new Exception("Unexpected state.");
-                if (Codes.Count >= 1000) Codes.Remove(Redirects.Keys.First());
-                if (Codes.ContainsKey(state)) Codes.Remove(state);
+                if (!Redirects.Contains(state)) throw new Exception("Unexpected state.");
+                if (Codes.Count >= 1000) for (var i = 0; i < 100; i++) Codes.RemoveAt(i);
+                if (Codes.Contains(state)) Codes.Remove(state);
 
-                var redirectUri = Redirects[state];
+                var redirectUri = (string) Redirects[state];
 
                 Redirects.Remove(state);
 
@@ -82,9 +84,9 @@ namespace PixelNetwork.Controllers
 
             lock (Codes)
             {
-                if (!Codes.ContainsKey(state)) return StatusCode(704);
+                if (!Codes.Contains(state)) return StatusCode(704);
 
-                var code = Codes[state];
+                var code = (string) Codes[state];
 
                 Codes.Remove(state);
 
