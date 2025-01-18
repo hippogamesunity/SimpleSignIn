@@ -32,7 +32,7 @@ namespace PixelNetwork.Controllers
 
             lock (Redirects)
             {
-                if (Redirects.Count >= 1000) for (var i = 0; i < 100; i++) Redirects.RemoveAt(i);
+                if (Redirects.Count >= 1000) for (var i = 0; i < 100; i++) Redirects.RemoveAt(0);
                 if (Redirects.Contains(state)) Redirects.Remove(state);
 
                 Redirects.Add(state, redirectUri);
@@ -48,7 +48,7 @@ namespace PixelNetwork.Controllers
             lock (Codes)
             {
                 if (!Redirects.Contains(state)) throw new Exception("Unexpected state.");
-                if (Codes.Count >= 1000) for (var i = 0; i < 100; i++) Codes.RemoveAt(i);
+                if (Codes.Count >= 1000) for (var i = 0; i < 100; i++) Codes.RemoveAt(0);
                 if (Codes.Contains(state)) Codes.Remove(state);
 
                 var redirectUri = (string) Redirects[state];
